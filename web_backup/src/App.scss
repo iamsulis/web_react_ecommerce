@@ -1,0 +1,107 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+@import '~bootstrap/scss/bootstrap';
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.content-header {
+  padding-left: 4rem !important;
+  padding-right: 4rem !important;
+}
+
+.background-top {
+  background-color: #F0F3F7 !important;
+}
+
+.text-right {
+  text-align: right;
+}
+
+a.menu-top {
+  text-decoration: none;
+}
+
+@media (min-width: 0px) {
+  .menu-top {
+    text-align: left;
+    display: block;
+  }
+}
+
+@media (min-width: 991px) {
+  .menu-top {
+    text-align: right;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.header-desktopp {
+  display: none;
+}
+
+.header-border-bottom {
+  border-bottom: 1px solid #F0F3F7;
+  // opacity: 20%;
+}
+
+body {
+  padding-top: 7rem;
+}
+
+.vertical-line {
+  border-left: 3px solid #F0F3F7;
+  height: auto;
+}
+
+.content-width {
+  padding-left: 15rem !important;
+  padding-right: 15rem !important;
+}
+
+.scrolls {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap
+}
+
+.card-custom{
+  border: 1px solid #cdcfd3;
+  border-radius: 5px;
+}
