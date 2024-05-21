@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
  
-class User extends Model {
+class Toko extends Model {
     //
 
     protected $hidden = ['created_at', 'updated_at'];
     protected $connection   = 'mysql';
-    protected $table        = 'table_user';
+    protected $table        = 'table_toko';
     public $timestamps      = false;
 
-    function user_list($select = NULL, $where = NULL, $param = NULL){
+    function toko_list($select = NULL, $where = NULL, $param = NULL){
 
-        $datadb = new User;
+        $datadb = new Toko;
 
         if($where){
             $where = implode(" AND ", $where);

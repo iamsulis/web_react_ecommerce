@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
  
 use App\Models\User;
 use App\Models\Item;
+use App\Models\Category;
 
 use Illuminate\Http\Request;
 
@@ -20,30 +21,38 @@ class DashboardController extends Controller
 
     public function __construct(){
         $this->item = new Item;
+        $this->category = new Category;
     }
 
     function dashboard_list(Request $request){
+
     	$get = $request->input();
 
-    	$where = [];
-
-        $no = 0;
-        $item_list = [];
+        // =================== CATEGORY LIST ==================
+        $where = [];
 
         $param = [];
-        $param[] = " LIMIT 7";
-    	$datadb = $this->item->item_list(@$select, @$where, @$param);
+        $param[] = " ORDER BY RAND() ";
+        $param[] = " LIMIT 8 ";
+
+        $datadb = $this->category->category_list(@$select, @$where, @$param);
         unset($where, $param);
 
-        foreach ($datadb as $key => $value) {
-            $item_list[$no][] = $value;
+        $data['category_list'] = $datadb;
+        // ====================================================
 
-            if(sizeof($item_list[$no]) >= 4){
-                $no++;
-            }
-        }
+        // ==================== ITEM LIST =====================
+        $where = [];
 
-    	$data['item_list'] = $item_list;
+        $param = [];
+        $param[] = " ORDER BY RAND() ";
+        $param[] = " LIMIT 15 ";
+
+        $datadb = $this->item->item_list(@$select, @$where, @$param);
+        unset($where, $param);
+
+        $data['product_list'] = $datadb;
+        // ====================================================
 
     	return response($data);
     }

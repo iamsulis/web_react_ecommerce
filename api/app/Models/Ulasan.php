@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
  
-class User extends Model {
+class Ulasan extends Model {
     //
 
     protected $hidden = ['created_at', 'updated_at'];
     protected $connection   = 'mysql';
-    protected $table        = 'table_user';
+    protected $table        = 'table_ulasan';
     public $timestamps      = false;
 
-    function user_list($select = NULL, $where = NULL, $param = NULL){
+    function ulasan_list($select = NULL, $where = NULL, $param = NULL){
 
-        $datadb = new User;
+        $datadb = new Ulasan;
 
         if($where){
             $where = implode(" AND ", $where);
