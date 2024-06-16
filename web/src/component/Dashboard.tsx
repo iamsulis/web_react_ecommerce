@@ -1,66 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMobile, faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { faMobile, faCartShopping, faStar } from "@fortawesome/free-solid-svg-icons";
 
 import { Link } from "react-router-dom";
 
 import logo from '/vite.svg'; // with import
-
-
-const Header = () => {
-  return (
-    <>
-      <nav className='bg-green-600 flex justify-between px-8 py-1'>
-        <div className="text-white flex items-center">
-          <FontAwesomeIcon icon={faMobile} />
-          <label className="text-sm ps-3">Download E-Commerce Apps</label>
-        </div>
-
-        <div className="flex gap-x-8 text-white">
-          <div>
-            Tentang E-Commerce
-          </div>
-
-          <div>
-            Promo
-          </div>
-
-          <div>
-            E-Commerce Care
-          </div>
-        </div>
-      </nav>
-
-      <nav className="flex justify-between px-8 py-3">
-        <div>
-          <Link to="/" reloadDocument>
-            <h3 className="text-xl font-bold">E-Commerce</h3>
-          </Link>
-        </div>
-
-        <div>
-          <label className="text-md">Kategori</label>
-        </div>
-
-        <div className="w-2/3">
-          <input className="border rounded pb-1 px-3 w-full" type="text" placeholder="Cari Nama Barang" />
-        </div>
-
-        <div>
-          <FontAwesomeIcon icon={faCartShopping} />
-        </div>
-
-        <div>
-          <div className="flex gap-x-8">
-            <button className="bg-green-600 py-1 px-4 text-white font-bold rounded">Masuk</button>
-            <button className="bg-green-600 py-1 px-4 text-white font-bold rounded">Daftar</button>
-          </div>
-        </div>
-
-      </nav>
-    </>
-  )
-}
+import Header from "./_partial/Header";
 
 const Category = (props: any) => {
 
@@ -145,13 +90,15 @@ const Product = (props: any) => {
               return (
                 <div key={i} className="border-2 p-3 rounded w-full hover:bg-slate-200">
                   <Link to={"detail_product?id=" + e.id} reloadDocument>
-                    <div className="bg-auto">
-                      <img src={e.photo} alt="" />
+                    <div className="bg-auto object-none object-center">
+                      <img src={e.photo} alt="" className="w-fit" width={'50%'} />
                     </div>
                     <h3 className="">{e.name}</h3>
                     <h3 className="font-bold">Rp {e.price}</h3>
                     <h3>Jakarta Timur</h3>
-                    <h3>4.9/5</h3>
+                    <h3>
+                      <FontAwesomeIcon icon={faStar} className="text-yellow-400" /> 4.9/5 | 30 Terjual
+                    </h3>
                   </Link>
                 </div>
               )
@@ -178,8 +125,17 @@ function Dashboard() {
     product_list: [],
   });
 
+  const queryParameters = new URLSearchParams(window.location.search)
+  const search = queryParameters.get("search");
+
+  var params = {
+    search: search,
+  };
+
+  params = new URLSearchParams(params);
+
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL + "/dashboard", {
+    fetch(import.meta.env.VITE_API_URL + "/dashboard?" + params.toString(), {
       method: "GET",
       headers: {
 

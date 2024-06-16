@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Item;
 use App\Models\Toko;
 use App\Models\Ulasan;
+use App\Models\Transaction;
 
 use Illuminate\Http\Request;
 
@@ -25,6 +26,7 @@ class ItemController extends Controller
         $this->toko = new Toko;
         $this->ulasan = new Ulasan;
         $this->user = new User;
+        $this->transaction = new Transaction;
     }
 
     function item_list(Request $request){
@@ -79,12 +81,14 @@ class ItemController extends Controller
 
             // ===================== DATA ULASAN ======================
             $where = [];
-            $where[] = " id_barang = ".$id;
+            $where[] = " id_item = ".$id;
+            $where[] = " feedback IS NOT NULL ";
 
             $param = [];
+            $param[] = " ORDER BY id DESC ";
             $param[] = " LIMIT 10 ";
 
-            $datadb = $this->ulasan->ulasan_list(@$select, @$where, @$param);
+            $datadb = $this->transaction->transaction_list(@$select, @$where, @$param);
             unset($where);
 
             foreach ($datadb as $key => $value) {
@@ -120,6 +124,55 @@ class ItemController extends Controller
 
         return response($data);
 
+    }
+
+    function transaction(Request $request){
+        $post = $request->input();
+
+        $id = $post['id'];
+        $id_user = $post['id_user'];
+        $pesan = $post['pesan'];
+
+        // =================== TRANSACTION ================
+        $where = [];
+        $where[] = " id = '".$id."' ";
+
+        $datadb = $this->item->item_list(@$select, @$where, @$param);
+        unset($where, $param);
+        $datadb = $datadb[0];
+
+        $total_stock = $datadb['stock'];
+
+        $price = str_replace('.', '', $datadb['price']);
+
+        $total_harga = $price * $pesan;
+
+        $data = array(
+            'id_user'   => $id_user,
+            'id_item'   => $id,
+            'price'     => $total_harga,
+            'total'     => $pesan,
+            'datetime_transaction'     => date('Y-m-d H:i:s'),
+        );
+
+        $this->transaction->transaction_add($data);
+        unset($data);
+        // ================================================
+
+        // =================== ITEM =======================
+        $where = array(
+            'id' => $id
+        );
+
+        $data = array(
+            'stock' => $total_stock - $pesan
+        );
+
+        $this->item->item_update($data, $where);
+        unset($where, $data);
+        // ================================================
+
+        return true;
     }
 
 }

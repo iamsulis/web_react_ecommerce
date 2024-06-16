@@ -28,6 +28,8 @@ class DashboardController extends Controller
 
     	$get = $request->input();
 
+        $search = $get['search'];
+
         // =================== CATEGORY LIST ==================
         $where = [];
 
@@ -43,6 +45,10 @@ class DashboardController extends Controller
 
         // ==================== ITEM LIST =====================
         $where = [];
+
+        if($search){
+            $where[] = " name LIKE '%".$search."%' ";
+        }
 
         $param = [];
         $param[] = " ORDER BY RAND() ";

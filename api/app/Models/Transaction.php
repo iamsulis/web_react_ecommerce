@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
  
-class Item extends Model {
+class Transaction extends Model {
     //
 
     protected $hidden = ['created_at', 'updated_at'];
     protected $connection   = 'mysql';
-    protected $table        = 'table_item';
+    protected $table        = 'table_transaction';
     public $timestamps      = false;
 
-    function item_list($select = NULL, $where = NULL, $param = NULL){
+    function transaction_list($select = NULL, $where = NULL, $param = NULL){
 
-        $datadb = new Item;
+        $datadb = new Transaction;
 
         if($where){
             $where = implode(" AND ", $where);
@@ -41,7 +41,11 @@ class Item extends Model {
         return $datadb;
     }
 
-    function item_update($data, $where){
+    function transaction_add($data){
+        DB::table($this->table)->insert($data);
+    }
+
+    function transaction_update($data, $where){
         DB::table($this->table)->where($where)->update($data);
     }
 }

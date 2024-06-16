@@ -1,8 +1,14 @@
 import React, { useReducer, useEffect, useState } from 'react'
+import Cookies from 'universal-cookie';
 import Top from './_partial/Top'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentDots, faHeart, faShareNodes, faStar } from "@fortawesome/free-solid-svg-icons";
+
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+import { Link, useNavigate } from "react-router-dom";
 
 // Define a reducer function
 const reducer = (state: any, action: any) => {
@@ -42,19 +48,37 @@ const Account_Seller = (props: any) => {
     )
 }
 
+const NoUlasan = () => {
+    return (
+        <>
+            <div className='border-2 rounded'>
+                <div className='p-4 text-center'>
+                    <h4 className='font-bold'>- No Review Yet -</h4>
+                </div>
+            </div>
+        </>
+    )
+}
+
 const Ulasan = (props: any) => {
 
     let data_ulasan = props.data;
 
-    // console.log(data_ulasan)
     return (
         <>
-            <div className='px-10 pt-6'>
-                <div className='pb-4'>
-                    <h3 className='font-bold text-xl'>Ulasan Pembeli</h3>
-                </div>
+            <div className="container mx-auto">
+                <h3 className='font-bold text-xl pb-4'>Ulasan Pembeli</h3>
 
                 <div className=''>
+                    {
+                        data_ulasan.length == 0
+                            ? (
+                                <NoUlasan />
+                            )
+                            : (
+                                <></>
+                            )
+                    }
 
                     {
                         data_ulasan.map((e: any, i: any) => {
@@ -81,7 +105,7 @@ const Ulasan = (props: any) => {
                                                 </div>
 
                                                 <div className='pt-2'>
-                                                    {e.ulasan}
+                                                    {e.feedback}
                                                 </div>
                                             </div>
                                         </div>
@@ -90,7 +114,6 @@ const Ulasan = (props: any) => {
                             )
                         })
                     }
-
                 </div>
             </div>
         </>
@@ -216,6 +239,8 @@ const Catalog = () => {
 
 const Total_Pesan = (props: any) => {
 
+    const navigate = useNavigate();
+
     let data_list = props.data;
 
     const [pesan, set_pesan] = useState(1);
@@ -232,10 +257,11 @@ const Total_Pesan = (props: any) => {
 
         if (pesan <= data_list.stock) {
             set_pesan(pesan);
+        } else {
+            pesan = pesan - 1;
         }
 
         let harga = hitung_total(pesan, data_list.price);
-        // console.log(harga);
 
         set_harga(harga);
     }
@@ -259,9 +285,68 @@ const Total_Pesan = (props: any) => {
         return str.join('.');
     }
 
+    const showSwal = (e: any) => {
+        var id = e.target.value;
+
+        withReactContent(Swal).fire({
+            title: "Are you sure?",
+            text: "Want to buy this item?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "rgb(22 163 74)",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, buy it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                beli_item(id, harga, pesan);
+
+                Swal.fire({
+                    title: "Success!",
+                    text: "Transaction Successfully",
+                    icon: "success"
+                });
+            }
+        });
+    }
+
+    const beli_item = (id: any, harga: any, pesan: any) => {
+
+        const cookies = new Cookies();
+
+        fetch(import.meta.env.VITE_API_URL + "/transaction", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            // mode: 'no-cors',
+            body: JSON.stringify({
+                id: id,
+                id_user: cookies.get('id'),
+                harga: harga,
+                pesan: pesan,
+            })
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                withReactContent(Swal).fire({
+                    title: "Success!",
+                    text: "Transaction Successfully",
+                    icon: "success"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/transaction');
+                    }
+                });
+            })
+            .catch((error) => console.log(error));
+    }
+
     return (
         <>
-            <div className='border-2 p-4 h-96'>
+            <div className='border-2 p-4 max-h-80'>
                 <div className='pb-5'>
                     <span className='font-bold'>Atur Jumlah dan Catatan</span>
                 </div>
@@ -308,10 +393,15 @@ const Total_Pesan = (props: any) => {
 
                 <div className='grid gap-y-3'>
                     <button className='bg-green-600 p-3 w-full text-white rounded font-bold'>+ Keranjang</button>
-                    <button className='bg-white p-3 w-full text-green-600 rounded font-bold border-2 border-green-600'>Beli</button>
+                    <button
+                        onClick={showSwal}
+                        value={data_list.id}
+                        className='bg-white p-3 w-full text-green-600 rounded font-bold border-2 border-green-600 hover:bg-green-100'>
+                        Beli
+                    </button>
                 </div>
 
-                <div className="grid grid-cols-3 divide-x-2 pt-4 text-center">
+                {/* <div className="grid grid-cols-3 divide-x-2 pt-4 text-center">
                     <button className='font-bold'>
                         <FontAwesomeIcon icon={faCommentDots}></FontAwesomeIcon>&nbsp; Chat
                     </button>
@@ -323,7 +413,7 @@ const Total_Pesan = (props: any) => {
                     <button className='font-bold'>
                         <FontAwesomeIcon icon={faShareNodes}></FontAwesomeIcon>&nbsp; Share
                     </button>
-                </div>
+                </div> */}
             </div>
         </>
     )
