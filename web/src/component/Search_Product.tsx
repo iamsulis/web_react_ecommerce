@@ -8,7 +8,8 @@ import logo from '/vite.svg'; // with import
 import Header from "./_partial/Header";
 
 function Product(props: any) {
-    var data = props.data;
+
+    let product_list = props.data;
 
     return (
         <>
@@ -16,7 +17,7 @@ function Product(props: any) {
                 <div className="flex gap-x-4 grid gap-y-4 grid-cols-5">
 
                     {
-                        data.map((e: any, i: any) => {
+                        product_list.map((e: any, i: any) => {
                             return (
                                 <div key={i} className="border-2 p-3 rounded w-full hover:bg-slate-200">
                                     <Link to={"/detail_product?id=" + e.id} reloadDocument>
@@ -41,23 +42,34 @@ function Product(props: any) {
     )
 }
 
-function List_Product(props: any) {
+function NoData(){
+    return(
+        <>
+            <div className="container mx-auto">
+                <div className="border border-2">
+                    <div className="p-4 text-center font-bold">
+                        - No Data Found -
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
 
-    const queryParameters = new URLSearchParams(window.location.search)
-    const category = queryParameters.get("category");
-
-    var params = {};
-
-    if (category) {
-        // params.push({category: category});
-        params.category = category
-    }
-
-    params = new URLSearchParams(params);
+function Search_Product(props: any) {
 
     const [data_list, set_data_list] = useState({
         product_list: [],
     });
+
+    const queryParameters = new URLSearchParams(window.location.search)
+    const search = queryParameters.get("search");
+
+    var params = {
+        search: search,
+    };
+
+    params = new URLSearchParams(params);
 
     useEffect(() => {
         fetch(import.meta.env.VITE_API_URL + "/item_list?" + params.toString(), {
@@ -68,6 +80,7 @@ function List_Product(props: any) {
         })
             .then((response) => response.json())
             .then((data) => {
+
                 set_data_list({
                     product_list: data.item_list,
                 });
@@ -78,9 +91,22 @@ function List_Product(props: any) {
     return (
         <>
             <Header {...props} />
-            <Product data={data_list.product_list} {...props} />
+
+            {
+                data_list.product_list.length > 0
+                    ? (
+                        <>
+                            <Product data={data_list.product_list} {...props} />
+                        </>
+                    )
+                    : (
+                        <>
+                            <NoData />
+                        </>
+                    )
+            }
         </>
     )
 }
 
-export default List_Product
+export default Search_Product

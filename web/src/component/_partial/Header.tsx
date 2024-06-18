@@ -1,18 +1,35 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMobile, faCartShopping } from "@fortawesome/free-solid-svg-icons";
 
 import Cookies from 'universal-cookie';
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
+
+    const [inputs, setInputs] = useState({});
+
+    const handleChange = (event: any) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        setInputs(values => ({ ...values, [name]: value }))
+    }
 
     const queryParameters = new URLSearchParams(window.location.search)
     const search = queryParameters.get("search");
 
+    useEffect(() => {
+        if (search) {
+            setInputs({
+                search: search
+            })
+        }
+    }, []);
+
     const cookies = new Cookies();
+    const navigate = useNavigate();
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -32,7 +49,7 @@ const Header = () => {
                 <div className="w-2/3">
                     {/* <input className="border rounded py-1 px-3 w-full" type="text" placeholder="Username" /> */}
 
-                    <form action={"/?search=" + search}>
+                    <form action={"/search_product?search=" + search}>
                         <div className="relative flex h-10 w-full">
                             <button
                                 className="!absolute right-1 top-1 z-10 select-none rounded bg-green-600 py-2 px-4 text-center align-middle font-sans text-xs font-bold text-white transition-all"
@@ -48,7 +65,8 @@ const Header = () => {
                                 placeholder="Search"
                                 autoComplete='off'
                                 required
-                                value={search}
+                                value={inputs.search || ""}
+                                onChange={handleChange}
                             />
                         </div>
                     </form>
@@ -58,10 +76,12 @@ const Header = () => {
                     cookies.get('id')
                         ? (
                             <>
-                                <Link>
+                                <Link to={"/wishlist"} reloadDocument>
                                     <div className="">
                                         <strong className="relative inline-flex items-center rounded px-2.5 py-1.5 text-xs font-medium">
-                                            <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-green-600 flex justify-center items-center items text-white"><span>10</span></span>
+                                            <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-green-600 flex justify-center items-center items text-white">
+                                                <span>{cookies.get('total_wishlist')}</span>
+                                            </span>
                                             <FontAwesomeIcon icon={faCartShopping} size="2x" />
                                         </strong>
                                     </div>
@@ -71,13 +91,6 @@ const Header = () => {
                         )
                         : (
                             <>
-                                <Link>
-                                    <div className="">
-                                        <strong className="relative inline-flex items-center rounded px-2.5 py-1.5 text-xs font-medium">
-                                            <FontAwesomeIcon icon={faCartShopping} size="2x" />
-                                        </strong>
-                                    </div>
-                                </Link>
                             </>
                         )
                 }
@@ -114,7 +127,20 @@ const Header = () => {
                                                                     </div>
                                                                 </Link>
 
-                                                                <button type="submit" className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200" role="menuitem" id="menu-item-3">Sign out</button>
+                                                                <button
+                                                                    type="button"
+                                                                    className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200"
+                                                                    role="menuitem"
+                                                                    id="menu-item-3"
+                                                                    onClick={() => {
+                                                                        cookies.remove('id', { path: '/', sameSite: 'none', secure: true });
+                                                                        cookies.remove('name', { path: '/', sameSite: 'none', secure: true });
+                                                                        cookies.remove('username', { path: '/', sameSite: 'none', secure: true });
+                                                                        cookies.remove('photo_user', { path: '/', sameSite: 'none', secure: true });
+
+                                                                        navigate('/');
+                                                                    }}
+                                                                >Sign out</button>
                                                             </div>
                                                         </div>
                                                     )

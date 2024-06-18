@@ -197,8 +197,6 @@ function Transaction() {
 
         var _param = {
             id_user: cookies.get('id'),
-            key2: 'value2',
-            key3: 'value3'
         };
 
         var params = new URLSearchParams(_param);

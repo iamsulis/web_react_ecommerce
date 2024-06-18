@@ -18,9 +18,11 @@ const Category = (props: any) => {
           <div className="">
             <div className="flex">
               <h2 className="font-bold text-xl content-center pe-4">Kategori</h2>
-              <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                Lihat Semua
-              </button>
+              <Link to="list_category" reloadDocument>
+                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                  Lihat Semua
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -31,7 +33,7 @@ const Category = (props: any) => {
             category_list.map((e: any, i: any) => {
               return (
                 <div key={i} className="border-2 p-3 rounded w-full hover:bg-slate-200">
-                  <Link to="list_product" reloadDocument>
+                  <Link to={"/list_product?category=" + e.id} reloadDocument>
                     <div className="flex align-middle">
                       <img src={e.photo} alt=".." />
 
@@ -108,9 +110,15 @@ const Product = (props: any) => {
         </div>
 
         <div className="">
-          <div className={'py-4'}>
-            <button>ABC</button>
-          </div>
+          <Link to="list_product" reloadDocument>
+            <div className={'py-4'}>
+              <button className="w-full">
+                <div className="border-2 bg-green-700 font-bold py-2 text-white hover:bg-green-800">
+                  Lihat Semua
+                </div>
+              </button>
+            </div>
+          </Link>
         </div>
 
       </div>
@@ -125,17 +133,8 @@ function Dashboard() {
     product_list: [],
   });
 
-  const queryParameters = new URLSearchParams(window.location.search)
-  const search = queryParameters.get("search");
-
-  var params = {
-    search: search,
-  };
-
-  params = new URLSearchParams(params);
-
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL + "/dashboard?" + params.toString(), {
+    fetch(import.meta.env.VITE_API_URL + "/dashboard", {
       method: "GET",
       headers: {
 

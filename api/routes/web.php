@@ -9,6 +9,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\WishlistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,15 @@ Route::post('/transaction', 'ItemController@transaction');
 
 $router->group(['prefix' => 'transaction'], function () use ($router) {
 	Route::get('/list', 'TransactionController@transaction_list');
+});
+
+$router->group(['prefix' => 'category'], function () use ($router) {
+	Route::get('/list', 'CategoryController@category_list');
+});
+
+$router->group(['prefix' => 'wishlist'], function () use ($router) {
+	Route::get('/list', 'WishlistController@wishlist');
+	Route::delete('/delete', 'WishlistController@wishlist_delete');
 });
 
 Route::post('/give_feedback', 'TransactionController@give_feedback');

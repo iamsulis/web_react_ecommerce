@@ -50,6 +50,7 @@ function Login() {
                     cookies.set('name', data.name, { path: '/', sameSite: 'none', secure: true });
                     cookies.set('username', data.username, { path: '/', sameSite: 'none', secure: true });
                     cookies.set('photo_user', data.photo_user, { path: '/', sameSite: 'none', secure: true });
+                    cookies.set('total_wishlist', data.total_wishlist, { path: '/', sameSite: 'none', secure: true });
 
                     navigate('/');
                 }

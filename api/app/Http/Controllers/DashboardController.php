@@ -28,7 +28,7 @@ class DashboardController extends Controller
 
     	$get = $request->input();
 
-        $search = $get['search'];
+        $search = @$get['search'];
 
         // =================== CATEGORY LIST ==================
         $where = [];

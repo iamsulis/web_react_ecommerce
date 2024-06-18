@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Item;
 use App\Models\Toko;
 use App\Models\Ulasan;
+use App\Models\Wishlist;
 
 use Illuminate\Http\Request;
 
@@ -15,6 +16,7 @@ class AuthController extends Controller
 {
 	public function __construct(){
         $this->user = new User;
+        $this->wishlist = new Wishlist;
     }
 
     function login_auth(Request $request){
@@ -35,16 +37,26 @@ class AuthController extends Controller
     	$param[] = " LIMIT 1";
 
     	$datadb = $this->user->user_list(@$select, @$where, @$param);
+        unset($where, $param);
 
     	if($datadb){
-    		$datadb = $datadb[0];
+    		$data_user = $datadb[0];
+
+            $select = [];
+            $select[] = " COUNT(*) AS total_wishlist ";
+
+            $datadb = $this->wishlist->wishlist(@$select, @$where, @$param);
+            unset($where, $param);
+
+            $total_wishlist = @$datadb[0]['total_wishlist']+0;
 
     		$data = array(
     			'status' => 200,
-    			'id' => $datadb['id'],
-    			'name' => $datadb['name_user'],
-    			'username' => $datadb['username'],
-    			'photo_user' => $datadb['photo_user'],
+    			'id' => $data_user['id'],
+    			'name' => $data_user['name_user'],
+    			'username' => $data_user['username'],
+                'photo_user' => $data_user['photo_user'],
+    			'total_wishlist' => $total_wishlist,
     		);
     	}
 

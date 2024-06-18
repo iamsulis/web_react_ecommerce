@@ -26,6 +26,7 @@ class CategoryController extends Controller
     	$get = $request->input();
 
     	$where = [];
+        $where[] = " id IS NOT NULL ";
 
     	$datadb = $this->category->category_list(@$select, @$where, @$param);
 
