@@ -10,6 +10,8 @@ import Search_Product from "./component/Search_Product";
 import List_Category from "./component/List_Category";
 import List_Product from "./component/List_Product";
 import Wishlist from "./component/Wishlist";
+import Register from "./component/Register";
+import Add_product from "./component/Add_product";
 
 function App() {
   return (
@@ -18,11 +20,13 @@ function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/detail_product" element={<Detail_Product />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/transaction" element={<Transaction />} />
         <Route path="/search_product" element={<Search_Product />} />
         <Route path="/list_category" element={<List_Category />} />
         <Route path="/list_product" element={<List_Product />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/add_product" element={<Add_product />} />
       </Routes>
     </BrowserRouter>
   )

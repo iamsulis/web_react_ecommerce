@@ -45,6 +45,9 @@ class AuthController extends Controller
             $select = [];
             $select[] = " COUNT(*) AS total_wishlist ";
 
+            $where = [];
+            $where[] = " id_user = '".$data_user['id']."' ";
+
             $datadb = $this->wishlist->wishlist(@$select, @$where, @$param);
             unset($where, $param);
 
@@ -61,5 +64,27 @@ class AuthController extends Controller
     	}
 
     	return response($data);
+    }
+
+    function register(Request $request){
+        $post = $request->input();
+
+        $username   = $post['username'];
+        $password   = $post['password'];
+        $name       = $post['name'];
+
+        $data = array(
+            'username' => $username,
+            'password' => $password,
+            'name_user' => $name,
+            'photo_user' => 'user/user_1.jpg',
+        );
+
+        $this->user->user_add($data);
+
+        $data['status'] = 200;
+
+        return response($data);
+
     }
 }

@@ -310,6 +310,24 @@ const Total_Pesan = (props: any) => {
         });
     }
 
+    const showKeranjang = (e: any) => {
+        var id = e.target.value;
+
+        withReactContent(Swal).fire({
+            title: "Are you sure?",
+            text: "Choose this item to cart?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "rgb(22 163 74)",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, cart it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                keranjang_item(id, harga, pesan);
+            }
+        });
+    }
+
     const beli_item = (id: any, harga: any, pesan: any) => {
 
         const cookies = new Cookies();
@@ -343,6 +361,45 @@ const Total_Pesan = (props: any) => {
             })
             .catch((error) => console.log(error));
     }
+
+    const keranjang_item = (id: any, harga: any, pesan: any) => {
+
+        const cookies = new Cookies();
+
+        fetch(import.meta.env.VITE_API_URL + "/wishlist/add", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            // mode: 'no-cors',
+            body: JSON.stringify({
+                id: id,
+                id_user: cookies.get('id'),
+                harga: harga,
+                pesan: pesan,
+            })
+        })
+            .then((response) => response.json())
+            .then((data) => {
+
+                cookies.set('total_wishlist', cookies.get('total_wishlist')+1, { path: '/', sameSite: 'none', secure: true });
+
+                withReactContent(Swal).fire({
+                    title: "Success!",
+                    text: "Transaction Successfully",
+                    icon: "success"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/wishlist');
+                    }
+                });
+            })
+            .catch((error) => console.log(error));
+    }
+
+    const cookies = new Cookies();
 
     return (
         <>
@@ -392,13 +449,50 @@ const Total_Pesan = (props: any) => {
                 </div>
 
                 <div className='grid gap-y-3'>
-                    <button className='bg-green-600 p-3 w-full text-white rounded font-bold'>+ Keranjang</button>
-                    <button
-                        onClick={showSwal}
-                        value={data_list.id}
-                        className='bg-white p-3 w-full text-green-600 rounded font-bold border-2 border-green-600 hover:bg-green-100'>
-                        Beli
-                    </button>
+
+                    {
+                        !cookies.get('id')
+                            ? (
+                                <>
+                                    <button
+                                        onClick={() => {
+                                            navigate('/login')
+                                        }}
+                                        className='bg-green-600 p-3 w-full text-white rounded font-bold'
+                                    >
+                                        + Keranjang
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            navigate('/login')
+                                        }}
+                                        className='bg-white p-3 w-full text-green-600 rounded font-bold border-2 border-green-600 hover:bg-green-100'>
+                                        Beli
+                                    </button>
+                                </>
+                            )
+                            : (
+                                <>
+                                    <button
+                                        onClick={showKeranjang}
+                                        value={data_list.id}
+                                        className='bg-green-600 p-3 w-full text-white rounded font-bold'
+                                    >
+                                        + Keranjang
+                                    </button>
+
+                                    <button
+                                        onClick={showSwal}
+                                        // onClick={showSwal}
+                                        value={data_list.id}
+                                        className='bg-white p-3 w-full text-green-600 rounded font-bold border-2 border-green-600 hover:bg-green-100'>
+                                        Beli
+                                    </button>
+                                </>
+                            )
+                    }
+
                 </div>
 
                 {/* <div className="grid grid-cols-3 divide-x-2 pt-4 text-center">
@@ -414,7 +508,7 @@ const Total_Pesan = (props: any) => {
                         <FontAwesomeIcon icon={faShareNodes}></FontAwesomeIcon>&nbsp; Share
                     </button>
                 </div> */}
-            </div>
+            </div >
         </>
     )
 }

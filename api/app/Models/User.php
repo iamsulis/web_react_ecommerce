@@ -40,4 +40,8 @@ class User extends Model {
 
         return $datadb;
     }
+
+    function user_add($data){
+        DB::table($this->table)->insert($data);
+    }
 }

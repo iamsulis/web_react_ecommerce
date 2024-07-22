@@ -7,6 +7,7 @@ function Login() {
 
     const [inputs, setInputs] = useState({});
     const [error, setError] = useState({});
+    const [status_submit, setStatusSubmit] = useState(0);
 
     const navigate = useNavigate();
     const cookies = new Cookies();
@@ -144,7 +145,14 @@ function Login() {
 
                     <p className={"mt-10 text-center text-sm text-gray-500"}>
                         Not a member?&nbsp;
-                        <a href="#" className={"font-semibold leading-6 text-green-600 hover:text-green-500"}>Register Here</a>
+                        <Link to="/register" reloadDocument>
+                            <button
+                                type="button"
+                                className={"font-semibold leading-6 text-green-600 hover:text-green-500"}
+                            >
+                                Register Here
+                            </button>
+                        </Link>
                     </p>
                 </div>
 

@@ -155,12 +155,14 @@ const Header = () => {
                                 </div>
 
                                 <div className=''>
-                                    <button
-                                        className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                        type="button"
-                                    >
-                                        Add Product
-                                    </button>
+                                    <Link to="/add_product" reloadDocument>
+                                        <button
+                                            className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                            type="button"
+                                        >
+                                            Add Product
+                                        </button>
+                                    </Link>
                                 </div>
                             </>
 
@@ -172,7 +174,10 @@ const Header = () => {
                                     <Link to="/login" reloadDocument>
                                         <button className="bg-green-600 py-1 px-4 text-white font-bold rounded">Masuk</button>
                                     </Link>
-                                    <button className="bg-green-600 py-1 px-4 text-white font-bold rounded">Daftar</button>
+
+                                    <Link to="/register" reloadDocument>
+                                        <button className="bg-green-600 py-1 px-4 text-white font-bold rounded">Daftar</button>
+                                    </Link>
                                 </div>
                             </div>
                         )

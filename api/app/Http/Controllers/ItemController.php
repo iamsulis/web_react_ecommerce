@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\Toko;
 use App\Models\Ulasan;
 use App\Models\Transaction;
+use App\Models\Wishlist;
 
 use Illuminate\Http\Request;
 
@@ -27,6 +28,7 @@ class ItemController extends Controller
         $this->ulasan = new Ulasan;
         $this->user = new User;
         $this->transaction = new Transaction;
+        $this->wishlist = new Wishlist;
     }
 
     function item_list(Request $request){
@@ -185,6 +187,54 @@ class ItemController extends Controller
         // ================================================
 
         return true;
+    }
+
+    function transaction_from_cart(Request $request){
+        $post = $request->input();
+
+        $data = $post['data'];
+
+        foreach ($data as $key => $value) {
+
+            if($value['checked'] == true){
+                $data_delete = array(
+                    'id' => $value['id']
+                );
+
+                $data_submit[] = array(
+                    'id_user'               => $value['id_user'],
+                    'id_item'               => $value['id_item'],
+                    'price'                 => $value['total_harga'],
+                    'total'                 => $value['total'],
+                    'datetime_transaction'  => date('Y-m-d H:i:s'),
+                );
+
+                $this->wishlist->wishlist_delete($data_delete);
+
+                // ============= ITEM ==============
+                $where = array(
+                    'id' => $value['id_item']
+                );
+
+                $dt = array(
+                    'stock' => $value['stock_item'] - $value['total']
+                );
+
+                $this->item->item_update($dt, $where);
+                unset($where, $dt);
+                // =================================
+            }
+
+        }
+
+        $this->transaction->transaction_add($data_submit);
+
+        unset($data);
+
+        $data['status'] = 200;
+        $data['total_wishlist'] = sizeof($data_submit);
+
+        return response($data);
     }
 
 }

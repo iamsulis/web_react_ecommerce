@@ -31,6 +31,7 @@ $router->group(['prefix' => 'dashboard'], function () use ($router) {
 });
 
 Route::post('/login_auth', 'AuthController@login_auth');
+Route::post('/register', 'AuthController@register');
 
 Route::get('/dashboard', 'DashboardController@dashboard_list');
 Route::get('/category_list', 'CategoryController@category_list');
@@ -40,8 +41,13 @@ Route::get('/detail_product', 'ItemController@item_detail');
 
 Route::post('/transaction', 'ItemController@transaction');
 
+$router->group(['prefix' => 'user'], function () use ($router) {
+	Route::post('/check_username', 'UserController@check_username');
+});
+
 $router->group(['prefix' => 'transaction'], function () use ($router) {
 	Route::get('/list', 'TransactionController@transaction_list');
+	Route::post('/from_cart', 'ItemController@transaction_from_cart');
 });
 
 $router->group(['prefix' => 'category'], function () use ($router) {
@@ -50,6 +56,7 @@ $router->group(['prefix' => 'category'], function () use ($router) {
 
 $router->group(['prefix' => 'wishlist'], function () use ($router) {
 	Route::get('/list', 'WishlistController@wishlist');
+	Route::post('/add', 'WishlistController@wishlist_add');
 	Route::delete('/delete', 'WishlistController@wishlist_delete');
 });
 

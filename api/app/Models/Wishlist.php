@@ -41,11 +41,11 @@ class Wishlist extends Model {
         return $datadb;
     }
 
-    function transaction_add($data){
+    function wishlist_add($data){
         DB::table($this->table)->insert($data);
     }
 
-    function transaction_update($data, $where){
+    function wishlist_update($data, $where){
         DB::table($this->table)->where($where)->update($data);
     }
 

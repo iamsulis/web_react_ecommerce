@@ -90,6 +90,16 @@ function Product(props: any) {
             .catch((error) => console.log(error));
     }
 
+    function clicked(total: any, stock_item: any, i: any) {
+
+        if (total <= stock_item) {
+            data[i].total = total
+            data[i].total_harga = total * data[i].harga;
+        }
+
+        props.gantiTotal(data)
+    }
+
     return (
         <>
             <div className="container mx-auto">
@@ -108,6 +118,7 @@ function Product(props: any) {
                                                         <input
                                                             type="checkbox"
                                                             className="w-7 h-7"
+                                                            id={i}
                                                             onChange={(e) => {
                                                                 props.onChange(e)
                                                             }}
@@ -133,7 +144,7 @@ function Product(props: any) {
                                                                                 <button
                                                                                     type="button"
                                                                                     onClick={() => {
-                                                                                        // clicked(pesan - 1)
+                                                                                        clicked(e.total - 1, e.stock_item, i)
                                                                                     }}
                                                                                     className="px-4 py-1.5 border-l-2 border-t-2 border-b-2 rounded-l-lg border-green-600"
                                                                                     disabled={(e.total == 1 ? true : false)}
@@ -141,12 +152,12 @@ function Product(props: any) {
                                                                                     <span className='font-bold text-lg'>-</span>
                                                                                 </button>
 
-                                                                                <input type="text" value={e.total} className='text-center border-y-2 border-green-600 w-2' readOnly />
+                                                                                <input type="text" value={e.total} className='text-center w-5 border-y-2 border-green-600 w-2' readOnly />
 
                                                                                 <button
                                                                                     type="button"
                                                                                     onClick={() => {
-                                                                                        // clicked(pesan + 1)
+                                                                                        clicked(e.total + 1, e.stock_item, i)
                                                                                     }}
                                                                                     className="px-4 py-2 border-r-2 border-t-2 border-b-2 rounded-r-lg border-green-600"
                                                                                 >
@@ -202,7 +213,6 @@ function Product(props: any) {
 }
 
 function Total_Harga(props: any) {
-    
 
     var total_harga = props.total_harga;
 
@@ -225,7 +235,26 @@ function Total_Harga(props: any) {
                                     </div>
 
                                     <div>
-                                        <button className="text-white rounded-lg p-3 bg-green-700 hover:bg-green-800">Checkout</button>
+                                        <button
+                                            onClick={() => {
+                                                withReactContent(Swal).fire({
+                                                    title: "Are you sure?",
+                                                    text: "Want to Checkout?",
+                                                    icon: "warning",
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: "rgb(22 163 74)",
+                                                    cancelButtonColor: "#d33",
+                                                    confirmButtonText: "Yes, cart it!"
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        props.checkout()
+                                                    }
+                                                });
+                                            }}
+                                            className="text-white rounded-lg p-3 bg-green-700 hover:bg-green-800"
+                                        >
+                                            Checkout
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -251,10 +280,10 @@ function NoData(props) {
     )
 }
 
-
 function Wishlist(props: any) {
 
     const cookies = new Cookies();
+    const navigate = useNavigate();
 
     const [data_list, set_data_list] = useState({
         wishlist: [],
@@ -300,16 +329,48 @@ function Wishlist(props: any) {
         return str.join('.');
     }
 
-    function update_total_harga(data:any){
+    function update_total_harga(data: any) {
         var total_harga = 0;
         data_list.wishlist.map((e: any, i: any) => {
-            if(data.includes(String(e.id))){
-            //     console.log('aa');
+            if (data.includes(String(e.id))) {
+                //     console.log('aa');
                 total_harga = total_harga + e.total_harga;
             }
         })
 
         set_total_harga(commafy(total_harga))
+    }
+
+    function checkout() {
+
+        fetch(import.meta.env.VITE_API_URL + "/transaction/from_cart", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            // mode: 'no-cors',
+            body: JSON.stringify({
+                data: data_list.wishlist
+            })
+        })
+            .then((response) => response.json())
+            .then((data) => {
+
+                cookies.set('total_wishlist', cookies.get('total_wishlist') - data.total_wishlist, { path: '/', sameSite: 'none', secure: true });
+
+                withReactContent(Swal).fire({
+                    title: "Success!",
+                    text: "Transaction Successfully",
+                    icon: "success"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/transaction');
+                    }
+                });
+            })
+            .catch((error) => console.log('hello'));
     }
 
     return (
@@ -323,6 +384,8 @@ function Wishlist(props: any) {
                             data={data_list.wishlist}
                             onChange={(e: any) => {
 
+                                data_list.wishlist[e.target.id].checked = e.target.checked
+
                                 var data = id_selected;
                                 if (e.target.checked == true) {
                                     data.push(e.target.value);
@@ -333,8 +396,18 @@ function Wishlist(props: any) {
 
                                 set_id_selected(data);
 
+                                set_data_list({
+                                    wishlist: data_list.wishlist
+                                })
+
                                 update_total_harga(data);
 
+                            }}
+                            gantiTotal={(data: any) => {
+
+                                set_data_list({
+                                    wishlist: data
+                                })
                             }}
                             {...props}
                         />
@@ -347,7 +420,13 @@ function Wishlist(props: any) {
             }
 
 
-            <Total_Harga total_harga={total_harga} {...props} />
+            <Total_Harga
+                total_harga={total_harga}
+                checkout={() => {
+                    checkout()
+                }}
+                {...props}
+            />
         </>
     )
 }

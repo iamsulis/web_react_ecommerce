@@ -98,6 +98,73 @@ class WishlistController extends Controller
         return response($data);
     }
 
+    function wishlist_add(Request $request){
+        $post = $request->input();
+
+        $id_user    = $post['id_user'];
+        $id         = $post['id'];
+        $pesan      = $post['pesan'];
+
+        // =================== DATA WISHLIST ===================
+        $where = [];
+        $where[] = " id_user = '".$id_user."' ";
+        $where[] = " id_item = '".$id."' ";
+
+        $datadb = $this->wishlist->wishlist(@$select, @$where, @$param);
+        unset($where, $param);
+        // =====================================================
+
+        if($datadb){
+            $datadb = $datadb[0];
+
+            $total_wishlist = $datadb['total'] + $pesan;
+
+            // =================== DATA BARANG ===================
+            $total_stock = 0;
+
+            $where = [];
+            $where[] = " id = '".$id."' ";
+            $datadb = $this->item->item_list(@$select, @$where, @$param);
+            unset($where, $param);
+
+            foreach ($datadb as $key => $value) {
+                $total_stock = $value['stock'];
+            }
+            // ===================================================
+
+            if($total_wishlist > $total_stock){
+                $total_wishlist = $total_stock;
+            }
+
+            $data = array(
+                'total' => $total_wishlist
+            );
+
+            $where = array(
+                'id_user' => $id_user,
+                'id_item' => $id,
+            );
+
+            $this->wishlist->wishlist_update($data, $where);
+            unset($data, $where);
+
+        } else {
+            $data = array(
+                'id_user'   => $id_user,
+                'id_item'   => $id,
+                'total'     => $pesan,
+            );
+
+            $this->wishlist->wishlist_add($data);
+            unset($data);
+        }
+
+        $data['status'] = 200;
+
+        return response($data);
+
+    }
+
     function item_detail(Request $request){
         $get = $request->input();
 
