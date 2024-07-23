@@ -41,6 +41,11 @@ Route::get('/detail_product', 'ItemController@item_detail');
 
 Route::post('/transaction', 'ItemController@transaction');
 
+$router->group(['prefix' => 'product'], function () use ($router) {
+	Route::get('/add', 'ItemController@product_add');
+	Route::post('/add_procecss', 'ItemController@product_add_process');
+});
+
 $router->group(['prefix' => 'user'], function () use ($router) {
 	Route::post('/check_username', 'UserController@check_username');
 });

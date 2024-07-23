@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 18, 2024 at 03:23 PM
+-- Generation Time: Jul 23, 2024 at 05:20 PM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 7.4.30
 
@@ -20,25 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_ecommerce`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `migrations`
---
-
-CREATE TABLE `migrations` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `batch` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `migrations`
---
-
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(18, '2023_09_25_205721_create_ecommerce', 1);
 
 -- --------------------------------------------------------
 
@@ -96,14 +77,14 @@ INSERT INTO `table_item` (`id`, `name`, `description`, `price`, `stock`, `catego
 (4, 'iPhone 13 Garansi Resmi - 128GB, Midnight', 'HP', '10.200.000', 10, '2', 'items/hp_1.jpg', 1, NULL, NULL),
 (5, 'Apple iPhone 15 Garansi Resmi', 'HP', '13.625.000', 10, '2', 'items/hp_2.jpg', 1, NULL, NULL),
 (6, 'Apple iPhone 13 256GB 128GB 64GB Second Original Resmi iBox', 'HP', '7.450.000', 10, '2', 'items/hp_3.jpg', 1, NULL, NULL),
-(7, 'USB Card Reader Type C & Micro USB 3 in 1 TF SD Card OTG', 'Card Reader', '36.500', 10, '8', 'items/card_reader_1.jpg', 4, NULL, NULL),
+(7, 'USB Card Reader Type C & Micro USB 3 in 1 TF SD Card OTG', 'Card Reader', '36.500', 6, '8', 'items/card_reader_1.jpg', 4, NULL, NULL),
 (8, 'UGREEN Card Reader OTG USB Type C dan USB A 3.0 Ke Micro SD TF 50706', 'Card Reader', '120.000', 4, '8', 'items/card_reader_2.jpg', 4, NULL, NULL),
 (9, 'InGo card reader OTG 6 in 1 support USB, Type C, Micro USB, micro/SD', 'Card Reader', '40.000', 10, '8', 'items/card_reader_3.webp', 4, NULL, NULL),
 (10, 'Lenovo ThinkPad T480s Intel Core i5/i7 8th Gen T480 Laptop Slim', 'Laptop', '2.500.000', 9, '1', 'items/laptop_1.webp', 5, NULL, NULL),
 (11, 'Macbook Pro 2017 13\" Dual Core i5 8GB 128GB', 'Laptop', '6.199.000', 6, '1', 'items/laptop_2.webp', 5, NULL, NULL),
 (12, 'Lenovo Yoga Chromebook C630 - i7 8th 16GB 128GB - lenovo yoga C630', 'Laptop', '4.000.000', 8, '1', 'items/laptop_3.jpg', 5, NULL, NULL),
 (13, 'SSD V-GeN Solid State Drive V-GeN 128GB SATA 3 SSD SATA III VGEN - RESCUE 120GB', 'SSD Sata', '207.000', 10, '3', 'items/ssd_sata_1.jpg', 6, NULL, NULL),
-(14, 'SSD EYOTA 128GB SATA III 2.5\" 6GB/S GARANSI RESMI', 'SSD Sata', '167.000', 6, '3', 'items/ssd_sata_2.jpg', 6, NULL, NULL),
+(14, 'SSD EYOTA 128GB SATA III 2.5\" 6GB/S GARANSI RESMI', 'SSD Sata', '167.000', 2, '3', 'items/ssd_sata_2.jpg', 6, NULL, NULL),
 (15, 'SAMSUNG - 870 QVO 8TB | SSD SATA 8TB MZ-77Q8T0BW', 'SSD Sata', '12.079.000', 10, '3', 'items/ssd_sata_3.jpg', 6, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -159,7 +140,30 @@ INSERT INTO `table_transaction` (`id`, `id_user`, `id_item`, `price`, `total`, `
 (11, 1, 8, '720000', 6, '123', '2024-06-15 22:45:42'),
 (12, 1, 12, '8000000', 2, '123', '2024-06-15 22:56:30'),
 (13, 1, 3, '500000', 4, 'Bagus barangnya', '2024-06-16 09:20:59'),
-(14, 1, 10, '2500000', 1, 'Guttt', '2024-06-18 00:44:44');
+(14, 1, 10, '2500000', 1, 'Guttt', '2024-06-18 00:44:44'),
+(17, 16, 5, '13625000', 1, NULL, '2024-07-22 17:33:10'),
+(18, 16, 11, '6199000', 1, NULL, '2024-07-22 17:33:10'),
+(19, 16, 5, '13625000', 1, NULL, '2024-07-22 17:47:58'),
+(20, 16, 11, '6199000', 1, NULL, '2024-07-22 17:47:58'),
+(21, 16, 11, '6199000', 1, NULL, '2024-07-22 17:48:51'),
+(22, 16, 13, '621000', 3, NULL, '2024-07-22 17:48:51'),
+(23, 16, 11, '6199000', 1, NULL, '2024-07-22 17:49:12'),
+(24, 16, 13, '621000', 3, NULL, '2024-07-22 17:49:12'),
+(25, 16, 11, '6199000', 1, NULL, '2024-07-22 17:49:35'),
+(26, 16, 13, '621000', 3, NULL, '2024-07-22 17:49:35'),
+(27, 16, 11, '6199000', 1, NULL, '2024-07-22 17:49:53'),
+(28, 16, 13, '621000', 3, NULL, '2024-07-22 17:49:53'),
+(29, 16, 11, '6199000', 1, NULL, '2024-07-22 17:50:10'),
+(30, 16, 13, '621000', 3, NULL, '2024-07-22 17:50:10'),
+(31, 16, 11, '6199000', 1, NULL, '2024-07-22 17:50:55'),
+(32, 16, 13, '621000', 3, NULL, '2024-07-22 17:50:55'),
+(33, 16, 11, '6199000', 1, NULL, '2024-07-22 17:52:46'),
+(34, 16, 13, '621000', 3, NULL, '2024-07-22 17:52:46'),
+(35, 16, 13, '621000', 3, NULL, '2024-07-22 17:58:16'),
+(36, 16, 2, '750000', 3, NULL, '2024-07-22 17:58:16'),
+(37, 16, 11, '24796000', 4, NULL, '2024-07-22 21:49:08'),
+(38, 16, 10, '10000000', 4, 'Mangtaps', '2024-07-22 21:51:37'),
+(39, 16, 14, '668000', 4, NULL, '2024-07-22 22:00:55');
 
 -- --------------------------------------------------------
 
@@ -194,7 +198,9 @@ CREATE TABLE `table_user` (
 --
 
 INSERT INTO `table_user` (`id`, `name_user`, `username`, `password`, `photo_user`) VALUES
-(1, 'Usnul Fikri', 'usnul', 'usnul', 'user/user_1.jpg');
+(1, 'Sulis', 'sulis', 'sulis', 'user/user_1.jpg'),
+(15, '1', '11', '1', 'user/user_1.jpg'),
+(16, '1', '1', '1', 'user/user_1.jpg');
 
 -- --------------------------------------------------------
 
@@ -221,12 +227,6 @@ INSERT INTO `table_wishlist` (`id`, `id_user`, `id_item`, `total`) VALUES
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `migrations`
---
-ALTER TABLE `migrations`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `table_category`
@@ -275,12 +275,6 @@ ALTER TABLE `table_wishlist`
 --
 
 --
--- AUTO_INCREMENT for table `migrations`
---
-ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
-
---
 -- AUTO_INCREMENT for table `table_category`
 --
 ALTER TABLE `table_category`
@@ -302,7 +296,7 @@ ALTER TABLE `table_toko`
 -- AUTO_INCREMENT for table `table_transaction`
 --
 ALTER TABLE `table_transaction`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `table_ulasan`
@@ -314,13 +308,13 @@ ALTER TABLE `table_ulasan`
 -- AUTO_INCREMENT for table `table_user`
 --
 ALTER TABLE `table_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `table_wishlist`
 --
 ALTER TABLE `table_wishlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

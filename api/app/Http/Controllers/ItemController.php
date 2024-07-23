@@ -8,6 +8,7 @@ use App\Models\Toko;
 use App\Models\Ulasan;
 use App\Models\Transaction;
 use App\Models\Wishlist;
+use App\Models\Category;
 
 use Illuminate\Http\Request;
 
@@ -25,6 +26,7 @@ class ItemController extends Controller
     public function __construct(){
         $this->item = new Item;
         $this->toko = new Toko;
+        $this->category = new Category;
         $this->ulasan = new Ulasan;
         $this->user = new User;
         $this->transaction = new Transaction;
@@ -235,6 +237,41 @@ class ItemController extends Controller
         $data['total_wishlist'] = sizeof($data_submit);
 
         return response($data);
+    }
+
+    function product_add(Request $request){
+        $get = $request->input();
+
+        // ================= Category =====================
+        $datadb = $this->category->category_list(@$select, @$where, @$param);
+        unset($where, $param);
+
+        $data['category_list'] = $datadb;
+        // ================================================
+
+        return response($data);
+    }
+
+    function product_add_process(Request $request){
+        $post = $request->input();
+        $file = $request->file();
+
+        if($file){
+            $tmp_file = $_FILES['images']['tmp_name'];
+            // print_r($file['images']);exit;
+        }
+
+        print_r();exit;
+
+        $product_name = $post['product_name'];
+        // $product_photo = $_FILES['file_path']['tmp_name'];
+        $product_photo = $_FILES[$post['file_path']];
+
+        print_r($product_photo);exit;
+        $category = $post['category'];
+        $price = $post['price'];
+        $stock = $post['stock'];
+        $description = $post['description'];
     }
 
 }

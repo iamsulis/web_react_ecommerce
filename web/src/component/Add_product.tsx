@@ -1,7 +1,62 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
 import Header from './_partial/Header'
 
-const Form = () => {
+const Form = (props: any) => {
+
+    let category_list = props.category_list;
+
+    const [data_submit, set_data_submit] = useState({});
+    const [file, set_file] = useState([]);
+
+    const handleChange = (event: any) => {
+        let name = event.target.name;
+        let value = event.target.value;
+
+        if (name == 'product_photo') {
+            let img = event.target.files[0];
+
+            // set_data_submit(values => ({ ...values, 'file_path': img }))
+            set_file(img)
+        }
+
+        set_data_submit(values => ({ ...values, [name]: value }))
+    }
+
+    const submit_form = (event: any) => {
+        event.preventDefault();
+
+        var product_name = data_submit.product_name;
+        var product_photo = data_submit.product_photo;
+        var category = data_submit.category;
+        var price = data_submit.price;
+        var stock = data_submit.stock;
+        var description = data_submit.description;
+
+        let fd = new FormData()
+        fd.append("images", file);
+        fd.append("product_name", product_name);
+        fd.append("category", category);
+        fd.append("price", price);
+        fd.append("stock", stock);
+        fd.append("description", description);
+
+        fetch(import.meta.env.VITE_API_URL + "/product/add_procecss", {
+            method: "POST",
+            headers: {
+                // 'Accept': 'application/json',
+                // 'Content-Type': 'multipart/form-data;boundary=----WebKitFormBoundaryyrV7KO0BoCBuDbTL',
+                'Access-Control-Allow-Origin': '*'
+            },
+            // mode: 'no-cors',
+            body: fd
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((error) => console.log(error));
+    }
+
     return (
         <>
             <div className='container mx-auto'>
@@ -32,19 +87,24 @@ const Form = () => {
                                         placeholder='Enter Product Name'
                                         required
                                         autoComplete='off'
+                                        value={data_submit.product_name || ""}
+                                        onChange={handleChange}
                                         className={"px-3 block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-green-600 sm:text-sm sm:leading-6"}
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className={"pt-4 block text-sm font-medium leading-6 text-gray-900"}>Product Name</label>
+                                <label className={"pt-4 block text-sm font-medium leading-6 text-gray-900"}>Product Photo</label>
                                 <div className={"mt-1"}>
                                     <input
                                         name="product_photo"
                                         type="file"
                                         required
                                         autoComplete='off'
+                                        value={data_submit.product_photo || ""}
+                                        onChange={handleChange}
+                                        accept="image/png, image/gif, image/jpeg"
                                         className={"px-3 block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-green-600 sm:text-sm sm:leading-6"}
                                     />
                                 </div>
@@ -56,8 +116,17 @@ const Form = () => {
                                     <select
                                         name="category"
                                         className={"px-3 block w-full rounded border-0 py-1.5 bg-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-green-600 sm:text-sm sm:leading-6"}
+                                        value={data_submit.category || ""}
+                                        onChange={handleChange}
                                     >
                                         <option value="">- Please Choose - </option>
+                                        {
+                                            category_list.map((e: any, i: any) => {
+                                                return (
+                                                    <option value={e.id} key={i}>{e.name}</option>
+                                                )
+                                            })
+                                        }
                                     </select>
                                 </div>
                             </div>
@@ -71,6 +140,8 @@ const Form = () => {
                                         placeholder='Enter Price'
                                         required
                                         autoComplete='off'
+                                        value={data_submit.price || ""}
+                                        onChange={handleChange}
                                         className={"px-3 block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-green-600 sm:text-sm sm:leading-6"}
                                     />
                                 </div>
@@ -85,6 +156,8 @@ const Form = () => {
                                         placeholder='Enter Stock'
                                         required
                                         autoComplete='off'
+                                        value={data_submit.stock || ""}
+                                        onChange={handleChange}
                                         className={"px-3 block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-green-600 sm:text-sm sm:leading-6"}
                                     />
                                 </div>
@@ -96,6 +169,8 @@ const Form = () => {
                                     <textarea
                                         name="description"
                                         placeholder='Enter Description'
+                                        value={data_submit.description || ""}
+                                        onChange={handleChange}
                                         className={"px-3 block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-green-600 sm:text-sm sm:leading-6"}
                                     >
 
@@ -104,12 +179,30 @@ const Form = () => {
                             </div>
 
                             <div className={'pt-5'}>
-                                <button
-                                    type="submit"
-                                    className={"flex justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"}
-                                >
-                                    Submit
-                                </button>
+                                {
+                                    data_submit.product_name && data_submit.product_photo && data_submit.category && data_submit.price && data_submit.stock && data_submit.description
+                                        ? (
+                                            <button
+                                                type="submit"
+                                                onClick={(e) => {
+                                                    submit_form(e)
+                                                }}
+                                                className={"flex justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"}
+                                            >
+                                                Submit
+                                            </button>
+                                        )
+                                        : (
+                                            <button
+                                                type="submit"
+                                                disabled
+                                                className={"flex justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm"}
+                                            >
+                                                Submit
+                                            </button>
+                                        )
+                                }
+
                             </div>
                         </div>
                     </div>
@@ -119,11 +212,59 @@ const Form = () => {
     )
 }
 
+const Loading = () => {
+    return (
+        <>
+            <div>
+                Loading
+            </div>
+        </>
+    )
+}
+
 function Add_product() {
+
+    const [data_list, set_data_list] = useState({});
+    const [loading, set_loading] = useState(true);
+
+    useEffect(() => {
+
+        var _param = {
+            // id_user: cookies.get('id'),
+        };
+
+        var params = new URLSearchParams(_param);
+
+        fetch(import.meta.env.VITE_API_URL + "/product/add?" + params.toString(), {
+            method: "GET",
+            headers: {
+
+            }
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                set_data_list(data);
+                set_loading(false);
+            })
+            .catch((error) => console.log(error));
+    }, []);
+
     return (
         <>
             <Header />
-            <Form />
+
+            {
+                loading
+                    ? (
+                        <Loading />
+                    )
+                    : (
+                        <Form
+                            category_list={data_list.category_list}
+                        />
+                    )
+            }
+
         </>
     )
 }
