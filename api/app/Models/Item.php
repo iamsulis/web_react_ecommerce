@@ -41,6 +41,10 @@ class Item extends Model {
         return $datadb;
     }
 
+    function item_add($data){
+        DB::table($this->table)->insert($data);
+    }
+
     function item_update($data, $where){
         DB::table($this->table)->where($where)->update($data);
     }

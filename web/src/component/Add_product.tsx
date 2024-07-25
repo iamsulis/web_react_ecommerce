@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Header from './_partial/Header'
 
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+import { Link, useNavigate } from "react-router-dom";
+
 const Form = (props: any) => {
+
+    const navigate = useNavigate();
 
     let category_list = props.category_list;
 
@@ -14,47 +21,77 @@ const Form = (props: any) => {
 
         if (name == 'product_photo') {
             let img = event.target.files[0];
-
-            // set_data_submit(values => ({ ...values, 'file_path': img }))
             set_file(img)
         }
 
         set_data_submit(values => ({ ...values, [name]: value }))
     }
 
+    function commafy(num: any) {
+        var str = num.toString().split('.');
+        if (str[0].length >= 5) {
+            str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1.');
+        }
+        if (str[1] && str[1].length >= 5) {
+            str[1] = str[1].replace(/(\d{3})/g, '$1 ');
+        }
+        return str.join('.');
+    }
+
     const submit_form = (event: any) => {
+
         event.preventDefault();
 
-        var product_name = data_submit.product_name;
-        var product_photo = data_submit.product_photo;
-        var category = data_submit.category;
-        var price = data_submit.price;
-        var stock = data_submit.stock;
-        var description = data_submit.description;
+        withReactContent(Swal).fire({
+            title: "Are you sure?",
+            text: "Want to add this item?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "rgb(22 163 74)",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, add it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var product_name = data_submit.product_name;
+                var category = data_submit.category;
+                var price = data_submit.price;
+                var stock = data_submit.stock;
+                var description = data_submit.description;
 
-        let fd = new FormData()
-        fd.append("images", file);
-        fd.append("product_name", product_name);
-        fd.append("category", category);
-        fd.append("price", price);
-        fd.append("stock", stock);
-        fd.append("description", description);
+                let fd = new FormData()
+                fd.append("images", file);
+                fd.append("product_name", product_name);
+                fd.append("category", category);
+                fd.append("price", commafy(price));
+                fd.append("stock", stock);
+                fd.append("description", description);
 
-        fetch(import.meta.env.VITE_API_URL + "/product/add_procecss", {
-            method: "POST",
-            headers: {
-                // 'Accept': 'application/json',
-                // 'Content-Type': 'multipart/form-data;boundary=----WebKitFormBoundaryyrV7KO0BoCBuDbTL',
-                'Access-Control-Allow-Origin': '*'
-            },
-            // mode: 'no-cors',
-            body: fd
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-            })
-            .catch((error) => console.log(error));
+                fetch(import.meta.env.VITE_API_URL + "/product/add_procecss", {
+                    method: "POST",
+                    headers: {
+                        // 'Accept': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    // mode: 'no-cors',
+                    body: fd
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        withReactContent(Swal).fire({
+                            title: "Success!",
+                            text: "Insert Successfully",
+                            icon: "success"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                navigate('/');
+                            }
+                        });
+                    })
+                    .catch((error) => console.log(error));
+            }
+        });
+
+
     }
 
     return (
@@ -64,19 +101,6 @@ const Form = (props: any) => {
                     <div className='p-3'>
                         <div className='form-group'>
                             <h3 className='text-center font-bold'>Add Product</h3>
-
-                            <div>
-                                <label className={"pt-4 block text-sm font-medium leading-6 text-gray-900"}>Store Name</label>
-                                <div className={"mt-1"}>
-                                    <input
-                                        name="store_name"
-                                        type="text"
-                                        disabled
-                                        value={"Sulis Store"}
-                                        className={"px-3 block w-full bg-gray-200 rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-green-600 sm:text-sm sm:leading-6"}
-                                    />
-                                </div>
-                            </div>
 
                             <div>
                                 <label className={"pt-4 block text-sm font-medium leading-6 text-gray-900"}>Product Name</label>

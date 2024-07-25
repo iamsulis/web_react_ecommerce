@@ -256,22 +256,34 @@ class ItemController extends Controller
         $post = $request->input();
         $file = $request->file();
 
-        if($file){
-            $tmp_file = $_FILES['images']['tmp_name'];
-            // print_r($file['images']);exit;
-        }
-
-        print_r();exit;
-
         $product_name = $post['product_name'];
-        // $product_photo = $_FILES['file_path']['tmp_name'];
-        $product_photo = $_FILES[$post['file_path']];
-
-        print_r($product_photo);exit;
+        $filename = $_FILES['images']['name'];
         $category = $post['category'];
         $price = $post['price'];
         $stock = $post['stock'];
         $description = $post['description'];
+
+        $destination = $_SERVER['DOCUMENT_ROOT'].'/web_react_ecommerce/web/public/items/'.$filename;
+
+        move_uploaded_file($_FILES['images']['tmp_name'], $destination);
+
+        $data = array(
+            'name' => $product_name,
+            'description' => $description,
+            'price' => $price,
+            'stock' => $stock,
+            'category' => $category,
+            'photo' => 'items/'.$filename,
+            'id_toko' => 1,
+            'created_at' => date('Y-m-d H:i:s'),
+        );
+
+        $this->item->item_add($data);
+        unset($data);
+
+        $data['status'] = 200;
+
+        return response($data);
     }
 
 }
